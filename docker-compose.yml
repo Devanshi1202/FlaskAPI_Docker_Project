@@ -1,4 +1,5 @@
-version: '3'
+version: '3.8'
+
 services:
   mongo:
     image: mongo:5.0
@@ -7,6 +8,18 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+
+  flask-api:
+    build: .
+    container_name: flask_api_container
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydb
+    volumes:
+      - .:/app
 
 volumes:
   mongo_data:
