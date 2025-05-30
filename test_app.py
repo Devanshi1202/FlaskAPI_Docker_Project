@@ -6,11 +6,13 @@ from app import create_app, mongo
 
 class TestUserAPI(unittest.TestCase):
     def setUp(self):
-        self.app = create_app({"MONGO_URI": os.environ.get("MONGO_URI", "mongodb://localhost:27017/testdb")})
+        self.app = create_app({
+            "MONGO_URI": os.environ.get("MONGO_URI", "mongodb://localhost:27017/testdb")
+        })
         self.app.testing = True
         self.client = self.app.test_client()
 
-        # Clean up before each test
+        # Clean up before each test using app context
         with self.app.app_context():
             mongo.db.users.delete_many({})
 
@@ -19,7 +21,6 @@ class TestUserAPI(unittest.TestCase):
             mongo.cx.close()
 
     def test_get_users(self):
-        # Insert a test user
         with self.app.app_context():
             mongo.db.users.insert_one({"name": "John Doe", "email": "john@example.com"})
 
@@ -38,7 +39,7 @@ class TestUserAPI(unittest.TestCase):
         self.assertIn("id", response.get_json())
 
     def test_get_user_not_found(self):
-        fake_id = "000000000000000000000000"  # Valid ObjectId format, not in DB
+        fake_id = "000000000000000000000000"
         response = self.client.get(f'/users/{fake_id}')
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.get_json().get("error"), "User not found")
