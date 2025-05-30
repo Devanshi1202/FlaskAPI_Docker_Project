@@ -4,7 +4,7 @@ from app import create_app, mongo  # Import mongo instance
 
 class TestUserAPI(unittest.TestCase):
     def setUp(self):
-        self.app = create_app({"MONGO_URI": "mongodb://localhost:27017/testdb"})
+        self.app = create_app({"MONGO_URI": "mongodb://192.168.1.80:27017/testdb"})
         self.client = self.app.test_client()
 
     def tearDown(self):

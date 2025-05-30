@@ -9,7 +9,7 @@ def create_app(test_config=None):
     app = Flask(__name__)
 
     # Use environment variable or test config
-    app.config["MONGO_URI"] = test_config.get("MONGO_URI") if test_config else os.environ.get("MONGO_URI", "mongodb://localhost:27017/testdb")
+    app.config["MONGO_URI"] = test_config.get("MONGO_URI") if test_config else os.environ.get("MONGO_URI", "mongodb://192.168.1.80:27017/testdb")
 
     mongo.init_app(app)
 
