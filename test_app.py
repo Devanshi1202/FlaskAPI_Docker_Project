@@ -1,5 +1,5 @@
+import os
 import unittest
-import json
 from app import create_app, mongo
 
 class TestUserAPI(unittest.TestCase):
