@@ -1,18 +1,17 @@
+# app/__init__.py
 import os
 from flask import Flask
 from flask_pymongo import PyMongo
 
 mongo = PyMongo()
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
-
-    # Use MONGO_URI from environment or default to localhost
-    app.config["MONGO_URI"] = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-
+    app.config["MONGO_URI"] = test_config.get("MONGO_URI") if test_config else os.environ.get("MONGO_URI", "mongodb://localhost:27017/testdb")
+    
     mongo.init_app(app)
 
-    from .routes import main  # or whatever your blueprint is
+    from .routes import main
     app.register_blueprint(main)
 
     return app
