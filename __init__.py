@@ -11,7 +11,7 @@ def create_app(test_config=None):
     
     mongo.init_app(app)
 
-    from .routes import main
+    from .route import main
     app.register_blueprint(main)
 
     return app
