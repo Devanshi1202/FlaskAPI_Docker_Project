@@ -1,4 +1,4 @@
-name: Test Flask App with MongoDB on custom IP
+name: Test Flask App with MongoDB Service
 
 on:
   push:
@@ -12,29 +12,34 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12.5"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Wait for MongoDB to be ready
-        run: |
-          for i in {1..10}; do
-            nc -zv 192.168.1.80 27017 && echo "MongoDB is up!" && break || echo "Waiting for MongoDB..." && sleep 5
-          done
-
       - name: Run tests
         env:
-          MONGO_URI: mongodb://192.168.1.80:27017
+          MONGO_URI: mongodb://localhost:27017
         run: |
-          echo "Running tests with MongoDB URI $MONGO_URI"
+          echo "Running tests using MongoDB on localhost"
           pytest
