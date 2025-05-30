@@ -1,6 +1,6 @@
 import unittest
 import json
-from app import create_app, mongo  # Import mongo instance
+from app import create_app, mongo
 
 class TestUserAPI(unittest.TestCase):
     def setUp(self):
