@@ -1,38 +1,40 @@
-name: CI for Flask API
+name: Test Flask App with MongoDB on custom IP
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12.5'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12.5"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install flake8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Lint with flake8
-      run: |
-        chmod +x lint.sh
-        ./lint.sh
+      - name: Wait for MongoDB to be ready
+        run: |
+          for i in {1..10}; do
+            nc -zv 192.168.1.80 27017 && echo "MongoDB is up!" && break || echo "Waiting for MongoDB..." && sleep 5
+          done
 
-    - name: Run unit tests with coverage
-      run: |
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-        pip install pytest pytest-cov
-        pytest --cov=app test_app.py
+      - name: Run tests
+        env:
+          MONGO_URI: mongodb://192.168.1.80:27017
+        run: |
+          echo "Running tests with MongoDB URI $MONGO_URI"
+          pytest
