@@ -7,8 +7,7 @@ mongo = PyMongo()
 def create_app(test_config=None):
     app = Flask(__name__)
 
-    # Include a default DB name in URI
-    default_mongo_uri = "mongodb://localhost:27017/myDatabase"
+    default_mongo_uri = "mongodb://localhost:27017/testdb"
     app.config["MONGO_URI"] = (
         test_config.get("MONGO_URI")
         if test_config and "MONGO_URI" in test_config
@@ -17,7 +16,8 @@ def create_app(test_config=None):
 
     mongo.init_app(app)
 
-    from app.routes import main
+    # Register your blueprint here (if defined)
+    from app.routes import main  # Make sure this file exists
     app.register_blueprint(main)
 
     return app

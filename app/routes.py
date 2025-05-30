@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request, jsonify
 from app import mongo
 
 main = Blueprint("main", __name__)
@@ -11,7 +11,5 @@ def get_users():
 @main.route("/users", methods=["POST"])
 def add_user():
     data = request.get_json()
-    if not data or "name" not in data:
-        return jsonify({"error": "Missing user data"}), 400
     result = mongo.db.users.insert_one({"name": data["name"]})
     return jsonify({"id": str(result.inserted_id)}), 201
