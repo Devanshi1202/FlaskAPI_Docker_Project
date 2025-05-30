@@ -28,12 +28,11 @@ jobs:
 
     - name: Lint with flake8
       run: |
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-
         chmod +x lint.sh
         ./lint.sh
 
     - name: Run unit tests with coverage
       run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
         pip install pytest pytest-cov
         pytest --cov=app test_app.py
