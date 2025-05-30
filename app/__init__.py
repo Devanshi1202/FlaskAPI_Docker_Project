@@ -16,8 +16,8 @@ def create_app(test_config=None):
 
     mongo.init_app(app)
 
-    # Register your blueprint here (if defined)
-    from app.routes import main  # Make sure this file exists
+    # Register your blueprint inside the function
+    from app.routes import main
     app.register_blueprint(main)
 
     return app
