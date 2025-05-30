@@ -7,7 +7,11 @@ mongo = PyMongo()
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    app.config["MONGO_URI"] = test_config.get("MONGO_URI") if test_config else os.environ.get("MONGO_URI", "mongodb://localhost:27017/testdb")
+    app.config["MONGO_URI"] = (
+        test_config.get("MONGO_URI")
+        if test_config
+        else os.getenv("MONGO_URI", "mongodb://localhost:27017")
+    )
     
     mongo.init_app(app)
 
